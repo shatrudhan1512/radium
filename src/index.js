@@ -10,7 +10,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const mongoose = require('mongoose')
 
-mongoose.connect("mongodb+srv://user-open-to-all:hiPassword123@cluster0.xgk0k.mongodb.net/Shatrudhan_Kumar_Database?retryWrites=true&w=majority", {useNewUrlParser: true})
+mongoose.connect("mongodb+srv://users-open-to-all:hiPassword123@cluster0.uh35t.mongodb.net/Shatrudhan_Kumar_Database?authSource=admin&replicaSet=atlas-wwe75z-shard-0&w=majority&readPreference=primary&appname=MongoDB%20Compass&retryWrites=true&ssl=true", {useNewUrlParser: true})
      .then(() => console.log('mongodb running on 2707'))
 	 .catch(err => console.log(err))
 	 
