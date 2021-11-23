@@ -4,13 +4,11 @@ const router = express.Router();
 
 
 const allController = require('../controllers/allController')
+const middlewareController = require('../middlewares/middlewares')
 
 
-
-router.post('/createNewAuthor', allController.createNewAuthor)
-router.post('/createNewBook', allController.createNewBook)
-router.get('/allBooks', allController.allBooks)
-router.get('/upadatedBookPrice', allController.upadatedBookPrice)
-router.get('/authorsName', allController.authorsName)
+router.get('/date',middlewareController.mid1, allController.dateLog)
+router.get('/ip',middlewareController.mid2, allController.ipLog)
+router.get('/route', middlewareController.mid3, allController.route)
 
 module.exports = router;
