@@ -1,20 +1,18 @@
-const jwt = require('jsonwebtoken')
-
-const validation = async function (req, res, next) {
-    let token = req.headers['x-auth-token']
-    if (!token) {
-        res.send({ status: false, msg: "token not valid" })
-    } else {
-        let valid = jwt.verify(token, "shatrudhan")
-        if (valid) {
-            next()
-        } else {
-            res.send({ status: false, msg: "token validation error" })
-        }
+const validateAppType = function(req, res, next){
+    let appTypeHeader = req.headers['isfreeapp']
+    let isAppFree
+    if(!appTypeHeader) {
+        return res.send({message: 'Mandatory header missing'})
     }
 
+    if(appTypeHeader === 'false') {
+        isAppFree = false
+    } else {
+        isAppFree = true
+    }
+    req.isFreeAppUser = isAppFree
 
-
+    next()
 }
 
-module.exports.validation = validation
+module.exports.validateAppType = validateAppType

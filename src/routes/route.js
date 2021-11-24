@@ -3,11 +3,12 @@ const express = require('express');
 const router = express.Router();
 
 const userController = require('../controllers/userController')
-const middlewareController = require('../middlewares/middlewares')
+const productController = require('../controllers/productController')
+const orderController = require('../controllers/orderController')
+const appMiddleware = require('../middlewares/middlewares')
 
-router.post('/users', userController.createUser)
-router.post('/login', userController.login)
-router.get('/users/:userId', middlewareController.validation, userController.getUserDetails)
-router.put('/users/:userId', middlewareController.validation, userController.userUpdates)
+router.post('/users',appMiddleware.validateAppType, userController.createUser)
+router.post('/products', productController.createProduct);
+router.post('/orders', appMiddleware.validateAppType, orderController.createOrder)
 
 module.exports = router;
