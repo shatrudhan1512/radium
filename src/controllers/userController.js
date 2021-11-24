@@ -3,54 +3,69 @@ const jwt = require('jsonwebtoken')
 
 const createUser = async function (req, res) {
     const userDetails = req.body
-    const userCreated = await userModel.create(userDetails)
+    try {
+        const userCreated = await userModel.create(userDetails)
 
-    res.send({ status: true, data: userCreated })
+        res.status(201).send({ status: true, data: userCreated })
+    } catch (err) {
+        res.status(500).send({ status: false, message: err.message })
+    }
 }
 
-
 const login = async function (req, res) {
+    try{
     const reqName = req.body.name
     const reqPassword = req.body.password
     const usersData = await userModel.findOne({ name: reqName, password: reqPassword, isDeleted: false })
     if (usersData) {
-        let payload = { data: usersData }
-        let token = jwt.sign(payload, "shatrudhan")
-        res.header('x-auth-token', token)
-        res.send({ status: true, data: { userId: usersData._id }, token: token })
+        let generatedToken = jwt.sign({userId:usersData._id }, "shatrudhan")
+        res.header('x-auth-token', generatedToken)
+        res.send({ status: true, data: { userId: usersData._id }, token: generatedToken })
     } else {
-        res.send({ status: false })
+        res.send({ status: false , msg:"user doesn't exist"})
     }
+} catch(err) {
+    res.status(500).send( {status:false, msg:err.message})
+}
 }
 
 const getUserDetails = async function (req, res) {
+    try{
     const reqId = req.params.userId
-    if(reqId == userModel._id) {
-    const userDetails = await userModel.findOne({ _id: reqId, isDeleted: false })
-    if (userDetails) {
-        res.send({ status: true, data: userDetails })
+    const decodeUserToken = req.user
+    if (reqId == decodeUserToken.userId) {
+        const userDetails = await userModel.findOne({ _id: reqId, isDeleted: false })
+        if (userDetails) {
+            res.status(200).send({ status: true, data: userDetails })
+        } else {
+            res.status(404).send({ status: false, msg: "User not found" })
+        }
     } else {
-        res.send({ status: false, msg: "User not found" })
+        res.status(404).send({ status: false, msg: "user id not valid or maybe You are tying to access Someone else data" })
     }
-} else {
-    res.send( {status:false, msg:"user id not valid"})
+} catch(err) {
+    res.status(500).send({status:false, msg:err.message})
 }
 }
 
 const userUpdates = async function (req, res) {
+    try{
     let reqemail = req.body.email
     let reqId = req.params.userId
-    let userId = userModel._id
+    let decodeUserToken = req.user
 
-    if (reqId == userId) {
-        const userDetails = await userModel.findOneAndUpdate({ _id: reqId}, { email: reqemail }, { new: true })
+    if (reqId == decodeUserToken.userId) {
+        const userDetails = await userModel.findOneAndUpdate({ _id: reqId }, { email: reqemail }, { new: true })
         if (userDetails) {
-            res.send({ status: true, data: userDetails })
+            res.status(200).send({ status: true, data: userDetails })
         } else {
-            res.send({ status: false, msg: "User id not found" })
+            res.status(404).send({ status: false, msg: "User not found" })
         }
     } else {
-        res.send({ status: false, msg: "user is not valid" })
+        res.status(403).send({ status: false, msg: "user is not valid or maybe you try to access another account" })
+    }
+    } catch(err) {
+        res.status(500).send({status:false, msg:err.message})
     }
 }
 
