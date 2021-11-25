@@ -8,12 +8,6 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const glbalMid = function(req,res, next) {
-	console.log('Hi I am Global Middlewares')
-	next()
-}
-app.use(glbalMid)
-
 const mongoose = require('mongoose')
 
 mongoose.connect("mongodb+srv://users-open-to-all:hiPassword123@cluster0.uh35t.mongodb.net/Shatrudhan_Kumar_Database?authSource=admin&replicaSet=atlas-wwe75z-shard-0&w=majority&readPreference=primary&appname=MongoDB%20Compass&retryWrites=true&ssl=true", {useNewUrlParser: true})
